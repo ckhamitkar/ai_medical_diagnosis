@@ -1,105 +1,271 @@
-# AI Medical Diagnosis
-
-This repository contains implementations, experiments, and learning artifacts related to **AI-driven medical diagnosis**, with a focus on applying machine learning and deep learning techniques to healthcare use cases.
-
-The work is primarily **educational and exploratory**, intended to demonstrate concepts such as medical image classification, diagnostic model evaluation, and responsible use of AI in healthcare.
+# 🩺 AI for Medical Diagnosis  
+## Course 1 — Evaluation, Thresholds, and Clinical Decision-Making
 
 ---
 
-## 📌 Project Goals
+# ============================
+# WEEK 1 — DIAGNOSTIC METRICS
+# ============================
 
-- Apply machine learning and deep learning techniques to medical diagnosis problems
-- Understand model evaluation metrics specific to healthcare
-- Explore bias, sensitivity, specificity, and ethical considerations in medical AI
-- Gain hands-on experience with real-world medical datasets
+## Clinical Context
 
----
+In medical diagnosis, **not all prediction errors carry the same risk**.
 
-## 🧠 Key Topics Covered
+- A **false negative** may delay treatment for a serious disease  
+- A **false positive** may cause anxiety, unnecessary testing, or overtreatment  
 
-- Medical image analysis (e.g., X-rays, MRI)
-- Binary and multi-class disease classification
-- Model evaluation metrics:
-  - Accuracy
-  - Sensitivity (Recall)
-  - Specificity
-  - ROC-AUC
-- Handling class imbalance in medical datasets
-- Interpreting results in a clinical context
+Because of this, evaluating AI models in healthcare requires **more than accuracy**.  
+This notebook explores diagnostic metrics and explains what they mean **from a clinical perspective**.
 
 ---
 
-> ⚠️ **Note:** Some datasets may not be included due to licensing or size constraints. Please refer to individual notebooks for dataset sources and instructions.
+## Objective
+
+- Compute standard diagnostic metrics
+- Understand how metrics map to real-world clinical decisions
+- Learn why different diseases require different evaluation priorities
 
 ---
 
-## 🛠️ Technologies Used
+## Key Assumptions
 
-- **Python**
-- **NumPy / Pandas**
-- **Scikit-learn**
-- **TensorFlow / Keras** (where applicable)
-- **Matplotlib / Seaborn**
-- **Jupyter Notebook**
+- Binary classification (disease vs. no disease)
+- Reliable ground truth labels
+- AI supports — not replaces — clinicians
 
 ---
 
-## 🚀 Getting Started
+## Confusion Matrix Refresher
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/ckhamitkar/ai_medical_diagnosis.git
-cd ai_medical_diagnosis
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-jupyter notebook
-Results & Learnings
+| Outcome | Meaning |
+|------|------|
+| True Positive (TP) | Sick patient correctly identified |
+| False Negative (FN) | Sick patient missed |
+| False Positive (FP) | Healthy patient incorrectly flagged |
+| True Negative (TN) | Healthy patient correctly cleared |
 
-Demonstrates how small metric changes can have large clinical implications
+In medicine, **false negatives often carry the highest risk**.
 
-Highlights why accuracy alone is insufficient in medical diagnosis
+---
 
-Shows practical trade-offs between sensitivity and specificity
+## Accuracy
 
-Reinforces the importance of ethical responsibility in medical AI
+Accuracy measures overall correctness.
 
-⚠️ Disclaimer
+However, in medical datasets with class imbalance, accuracy can be **deeply misleading**.  
+A model can appear accurate while failing to detect disease entirely.
 
-This project is for educational purposes only.
-The models and code in this repository are NOT intended for real-world clinical diagnosis or medical decision-making.
+➡️ Accuracy should never be used alone in medical diagnosis.
 
-Always consult qualified medical professionals for healthcare-related decisions.
+---
 
-📚 References & Inspiration
+## Sensitivity (Recall)
 
-AI for Medicine Specialization – deeplearning.ai / Coursera
+**Question answered:**  
+> If a patient has the disease, how likely is the model to detect it?
 
-Research papers and public medical ML datasets
+High sensitivity is critical for:
+- Cancer screening
+- Life-threatening conditions
+- Early intervention scenarios
 
-Standard ML and deep learning documentation
+---
 
-🤝 Contributions
+## Specificity
 
-Contributions, suggestions, and discussions are welcome.
+**Question answered:**  
+> If a patient is healthy, how likely is the model to say so?
 
-If you find an issue or want to improve something:
+High specificity reduces:
+- Unnecessary testing
+- Patient anxiety
+- Healthcare system overload
 
-Fork the repository
+---
 
-Create a feature branch
+## Precision (Positive Predictive Value)
 
-Submit a pull request
+**Question answered:**  
+> When the model predicts disease, how often is it correct?
 
-📄 License
+Precision strongly influences clinician trust and workflow efficiency.
 
-This project is released for learning and reference purposes.
-Please check individual files or datasets for their respective licenses.
+---
 
-👤 Author
+## Negative Predictive Value
 
-Charu Khamitkar
-AI & Systems Thinking Enthusiast
+**Question answered:**  
+> When the model predicts no disease, how reliable is that reassurance?
 
-## 🗂️ Repository Structure
+Critical for safely ruling out disease.
 
+---
+
+## Metric Trade-offs
+
+| Clinical Scenario | Priority Metric |
+|------|------|
+| Screening | Sensitivity |
+| Confirmation | Specificity |
+| Limited resources | Precision |
+| Patient reassurance | NPV |
+
+---
+
+## Week 1 Takeaways
+
+- Accuracy is insufficient
+- Metrics represent **clinical risk**
+- Metric choice reflects **medical priorities**
+
+---
+
+# ============================
+# WEEK 2 — ROC CURVES & THRESHOLDS
+# ============================
+
+## Clinical Context
+
+Most medical AI models output **probabilities**, not decisions.
+
+Turning probabilities into diagnoses requires choosing a **decision threshold** — a choice that directly impacts patient outcomes.
+
+---
+
+## Objective
+
+- Understand ROC curves and AUC
+- Analyze threshold trade-offs
+- Connect threshold choice to clinical decision-making
+
+---
+
+## ROC Curve Intuition
+
+An ROC curve shows the trade-off between:
+- Sensitivity (True Positive Rate)
+- False Positive Rate (1 − Specificity)
+
+The **top-left corner** represents strong clinical performance:
+- High sensitivity
+- Low false positives
+
+---
+
+## AUC (Area Under the Curve)
+
+AUC measures how well a model separates sick from healthy patients **across all thresholds**.
+
+Important:
+- High AUC ≠ clinically deployable
+- AUC does not encode real-world costs
+
+---
+
+## Threshold Selection as a Clinical Decision
+
+Choosing a threshold determines:
+- How many sick patients are missed
+- How many healthy patients are falsely flagged
+
+Lower threshold:
+- ↑ Sensitivity
+- ↑ False positives
+
+Higher threshold:
+- ↑ Specificity
+- ↑ False negatives
+
+---
+
+## Clinician’s Perspective
+
+A screening model may tolerate false positives to avoid missed disease.  
+A confirmatory test must minimize false alarms.
+
+➡️ Thresholds must align with **clinical intent**, not mathematical convenience.
+
+---
+
+## Week 2 Takeaways
+
+- ROC curves visualize trade-offs, not decisions
+- Threshold choice is a **medical judgment**
+- Model evaluation must reflect deployment context
+
+---
+
+# ============================
+# WEEK 3 — MODEL EVALUATION IN PRACTICE
+# ============================
+
+## Clinical Context
+
+Deploying a medical AI model requires understanding **how it behaves in real clinical workflows**, not just how it performs in isolation.
+
+---
+
+## Objective
+
+- Apply metrics to a trained model
+- Interpret confusion matrices
+- Translate model behavior into clinical consequences
+
+---
+
+## Confusion Matrix as a Clinical Tool
+
+Each cell represents a patient outcome:
+- Missed diagnoses
+- Unnecessary interventions
+- Correct reassurance
+- Effective detection
+
+Understanding these outcomes is essential before deployment.
+
+---
+
+## Interpreting Results Clinically
+
+Model performance should be evaluated in terms of:
+- Patient safety
+- Follow-up burden
+- Trustworthiness
+- Resource impact
+
+A “better” model numerically may be **worse clinically**.
+
+---
+
+## What This Model Would Mean in Practice
+
+If deployed, this model would:
+- Reduce missed diagnoses by X%
+- Increase follow-up testing by Y%
+- Shift workload for clinicians
+
+These trade-offs must be explicitly acknowledged.
+
+---
+
+## Cross-Week Synthesis
+
+Across all three weeks, we learn that:
+
+- Medical AI success is **context-dependent**
+- Metrics are proxies for patient outcomes
+- Ethical responsibility is inseparable from evaluation
+
+---
+
+## Final Reflection
+
+Medical AI is not about maximizing scores — it is about **minimizing harm**.
+
+Effective models align technical performance with clinical reality, patient safety, and healthcare system constraints.
+
+---
+
+## Portfolio Note
+
+This work is part of a learning portfolio focused on the **responsible application of machine learning in healthcare**, emphasizing interpretability, evaluation rigor, and ethical deployment.
